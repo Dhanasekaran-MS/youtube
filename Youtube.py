@@ -4,20 +4,6 @@ import pymysql
 import streamlit as st
 import pandas as pd
 
-with st.sidebar:    
-    st.title('**You:red[Tube]** :blue[Data Harvesting and Warehousing in Streamlit]')
-    st.header(body=":orange[**SKILLS TAKE AWAY :**]",divider="rainbow")
-    st.caption('  - :violet[**Python** Scripting]')
-    st.caption('  - :violet[Data **Collection and Management**]')
-    st.caption('  - :violet[**Mongo DB**]')
-    st.caption('  - :violet[**MySQL**]')
-    st.caption('  - :violet[**API** Integration]')
-    st.caption('  - :violet[Data **Migration**]')
-    st.caption('  - :violet[**Streamlit**]')
-
-    
-    
-
 # Get an API client
 def get_client():
     api_service_name = "youtube"
@@ -32,8 +18,7 @@ youtube = get_client()
 def get_channel_details(channel_id):
     request = youtube.channels().list(
         part="snippet,contentDetails,statistics",
-        id=channel_id
-    )
+        id=channel_id)
     response = request.execute()
     # filtering data and storing them in variables
     item = response["items"][0]
@@ -50,8 +35,7 @@ def get_channel_details(channel_id):
 def get_video_ids(channel_id):
     response = youtube.channels().list(
         part = "snippet,contentDetails,statistics",
-        id = channel_id
-    ).execute()
+        id = channel_id).execute()
     Playlist_id = response["items"][0]["contentDetails"]["relatedPlaylists"]["uploads"]
     
     next_page_token = None
@@ -105,7 +89,7 @@ def get_comment_details(video_ids):
     next_page_token=None
     comment_data=[]
         
-    # error-"exception" may arise if the comment section is off to handle this exception we use "try" and pass the exception:
+    # error-"exception" may arise if the comment section is off to handle this exception we use exceptional handling:
     for video_id in video_ids:
         while True:
             try:
@@ -129,7 +113,6 @@ def get_comment_details(video_ids):
                     break 
             except:
                 break # To break the while loop if try block catches error "video might has disabled comments"
-
     return comment_data
 
 # getting 'Playlists_details' using 'channel_id' from get_playlists_details using 'playlists().list()'   
@@ -144,7 +127,6 @@ def get_playlists_details(channel_id):
                 maxResults=50,
                 pageToken=next_page_token
             ).execute()
-
         for item in response["items"]:
             data=dict(Playlist_Id=item['id'],
                       Title=item['snippet']['title'],
@@ -159,13 +141,12 @@ def get_playlists_details(channel_id):
             break
     return playlist_details
 
-# MONGO DB CONNECTION,DATABASE AND COLLECTION
-
+# MONGO DB CONNECTION
 client = pymongo.MongoClient("mongodb://localhost:27017")
 db=client['Youtube']
 collection = db['Data']
 
-# creating a function channel_data to upload all data into mongodb as collection "channel_details"
+# creating a function data_to_mongo to upload all data into mongodb as collection "channel_details"
 def data_to_mongo(channel_id):
     channel_data = get_channel_details(channel_id)
     video_ids = get_video_ids(channel_id)
@@ -200,13 +181,11 @@ def mongo_to_sql():
     cur.execute("create database if not exists Youtube")
     # Establishing the connection to MySQL database --> 'youtube_data' and creating cursor
     mydb = pymysql.Connection(host="127.0.0.1", user="root", passwd="Dhana@123",database="Youtube")
-    cur = mydb.cursor()
-    
+    cur = mydb.cursor()    
     # Getting mongo DB client and collection 
     client = pymongo.MongoClient("mongodb://localhost:27017")
     db = client["Youtube"]   
     collection = db["Data"]
-    
     # creating channels table query :
     create_ch = '''create table if not exists Channels(Channel_Name varchar(90),
                                                           Channel_Id varchar(80) primary key,
@@ -253,37 +232,30 @@ def mongo_to_sql():
                                                       Comment_date timestamp)'''
     cur.execute(create_cmt)
     mydb.commit()
-    
-    
+  
     # Insert channels_data into channels table:    
     channel_columns = ["Channel_Name","Channel_Id","Description","Subscribers","Total_Views","Videos_count","Playlist_id"]    
-    channel_col_count = ["%s"]*len(channel_columns)
-    
+    channel_col_count = ["%s"]*len(channel_columns)    
     insert_ch = f'''insert ignore into Channels({",".join(channel_columns)})
                 values({",".join(channel_col_count)})'''
     for channels in collection.find({},{"_id": 0,"Channel_Info": 1}):
         for channel in channels.values():
             cur.execute(insert_ch,tuple(channel.values()))
-            mydb.commit()     
-            
+            mydb.commit()                
     # Insert playlist_data into playlists table:
     playlist_columns = ["Playlist_Id","Title","Channel_Id","Channel_Name","Video_count","Playlist_Published"]    
     playlist_col_count = ["%s"]*len(playlist_columns)
-
     insert_pl = f'''insert ignore into Playlists({','.join(playlist_columns)})
                     values({','.join(playlist_col_count)})'''
     for playlists in collection.find({},{"_id": 0,"Playlist_Info": 1}):
         for list_item in playlists.values():
             for playlist in list_item:
-                # playlist["Playlist_Published_At"] = playlist["Playlist_Published_At"].replace("T"," ").replace("Z"," ")
                 cur.execute(insert_pl, tuple(playlist.values()))
-                mydb.commit()   
-                
+                mydb.commit()                   
     # inserting videos_data into videos table:
     video_columns = ["Channel_Name","Channel_Id","Title","Video_Id","Description","Tags","Thumbnail","Published_Date","Duration",
                "Views","Likes","Favorite","Comment_Count","Definition","Caption_Status"]    
-    video_col_count = ["%s"]*len(video_columns)
-    
+    video_col_count = ["%s"]*len(video_columns)    
     insert_vdo = f'''insert ignore into Videos({','.join(video_columns)})
                      values({','.join(video_col_count)})'''    
     for videos in collection.find({},{"_id":0,"Video_Info":1}):
@@ -293,28 +265,34 @@ def mongo_to_sql():
                     lists["Tags"] = ','.join(lists["Tags"])
                 except TypeError:
                     pass
-                # lists["Published_Date"] = lists["Published_Date"].replace("T"," ").replace("Z"," ")
+                # using formatted_duration() to format the time to store it in MySQL
                 lists["Duration"] = formatted_duration(lists["Duration"])
                 values = tuple(lists.get(col, None) for col in video_columns)
                 cur.execute(insert_vdo,values)
-                mydb.commit() 
-                
+                mydb.commit()                
     # insert comments_data into comments table: 
     comment_columns=['Comment_Id','Video_Id', 'Comment_Text','Comment_Author','Comment_date']
-    comment_col_count=['%s']*len(comment_columns)
-    
+    comment_col_count=['%s']*len(comment_columns)   
     insert_cmt=f'''insert ignore into Comments({','.join(comment_columns)})
-                   values({','.join(comment_col_count)})'''
-    
+                   values({','.join(comment_col_count)})'''  
     for comments in collection.find({},{"_id":0,"Comments_Info":1}):
         for lists in comments.values():
             for comment in lists:
-                # comment["Comment_Published_date"] = comment["Comment_Published_date"].replace("T"," ").replace("Z"," ")
                 cur.execute(insert_cmt,tuple(comment.values()))
                 mydb.commit()
     mydb.close()
     return "The Data From MongoDB has now Migrated to MySQL"
 
+with st.sidebar:    
+    st.title('**You:red[Tube]** :blue[Data Harvesting and Warehousing in Streamlit]')
+    st.header(body=":orange[**SKILLS TAKE AWAY :**]",divider="rainbow")
+    st.caption('  - :violet[**Python** Scripting]')
+    st.caption('  - :violet[Data **Collection and Management**]')
+    st.caption('  - :violet[**Mongo DB**]')
+    st.caption('  - :violet[**MySQL**]')
+    st.caption('  - :violet[**API** Integration]')
+    st.caption('  - :violet[Data **Migration**]')
+    st.caption('  - :violet[**Streamlit**]')
 try:
     mydb = pymysql.Connection(host="127.0.0.1", user="root", passwd="Dhana@123",database="Youtube")
     cur = mydb.cursor()
@@ -325,7 +303,6 @@ except:
 channels=[]
 for channel in collection.find({},{"_id":0,"Channel_Info":1}):
     channels.append(channel["Channel_Info"]["Channel_Id"])
-    
 
 channel_id = st.text_input("Enter a **You:red[Tube]** *Channel Id* :")
 
@@ -359,7 +336,7 @@ if on:
         ct = pd.read_sql_query("select * from comments;", mydb)
         st.write(ct)
 
-option = st.selectbox('Select a Question to Display (Query) its Result !',
+option = st.selectbox(':orange[**Select a *Question* to Display Table**]',
                       ("1. The name of all the videos and their channel name",
                        "2. The Channel which  has most number of Videos",
                        "3. Top 10 Most Viewed Videos and their  Channel Name",
@@ -377,49 +354,40 @@ option = st.selectbox('Select a Question to Display (Query) its Result !',
 if option == "1. The name of all the videos and their channel name":
     query='select title as VIDEO,channel_name as CHANNEL from videos;'
     result=pd.read_sql_query(query,mydb)
-    st.write(result)
-    
+    st.write(result)   
 elif option == "2. The Channel which  has most number of Videos":
     query="select channel_name as CHANNEL,count(video_id)as VIDEOS_COUNT from videos group by channel_name order by count(video_id) desc limit 1;"
     result=pd.read_sql_query(query,mydb)
-    st.write(result)
-    
+    st.write(result)   
 elif option == "3. Top 10 Most Viewed Videos and their  Channel Name":
     query='select title as VIDEO, channel_name as CHANNEL,views as VIDEO_VIEWS from videos order by views desc limit 10;'
     result=pd.read_sql_query(query,mydb)
-    st.write(result)
-    
+    st.write(result)   
 elif option == "4. How many Comments were made on each Video ?":
 #     query="select b.title as VIDEO,count(a.comment_text) COMENTS_COUNT from comments as a left join videos as b on a.video_id=b.video_id group by a.video_id;"
     query="select comment_count as COMMENTS , title as VIDEO from videos;"
     result=pd.read_sql_query(query,mydb)
     st.write(result)
-
 elif option == "5. Video that has the Highest Number of Likes and it's Channel Name":
     query="select title as VIDEO,channel_name as CHANNEL,likes as LIKES from (select *,dense_rank()over(order by likes desc) as r from videos)as ranked_table where r=1;"
     result=pd.read_sql_query(query,mydb)
     st.write(result)
-
 elif option == "6. The Total Number of Likes for each Video":
     query="select likes as NO_OF_LIKES,title as VIDEO from videos;"
     result=pd.read_sql_query(query,mydb)
     st.write(result)
-
 elif option == "7. The Total Number of Views for each Channel":
     query="select sum(views) as TOTAL_VIEWS,channel_name as CHANNEL from videos group by channel_name;"
     result=pd.read_sql_query(query,mydb)
     st.write(result)
-
 elif option == "8. The Channels that has published videos in the year 2022":
     query="select distinct channel_name as CHANNEL from videos where year(published_date)=2022;"
     result=pd.read_sql_query(query,mydb)
     st.write(result)
-
 elif option == "9. The Average Duration of all Videos in each channel":
     query="select channel_name as CHANNEL,sec_to_time(avg(time_to_sec(duration))) as AVERAGE_DURATION from videos group by channel_name;"
     result=pd.read_sql_query(query,mydb)
     st.write(result)
-
 elif option == "10. The Video which has Highest No of Comments and it's Channel Name":
     # query='''select title as VIDEO,count(comment_text)as comments_count,channel_name as CHANNEL from comments as a 
     #         left join videos as b on a.video_id=b.video_id group by a.video_id order by comments_count desc limit 1;'''

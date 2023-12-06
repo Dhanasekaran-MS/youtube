@@ -5,9 +5,10 @@
 2. Getting Started
    - Prerequisites
    - Installation
-4. Usage
-5. Steps
-6. Run
+3. Usage
+4. Steps
+5. Run
+6. Skills Covered
 ------------------
 
 ## 1. About The Project :
@@ -57,7 +58,7 @@
    > - TO AVOID DUPLICATE REPETATION OF CHANNEL WE USED 'PRIMARY KEY' WHILE CREATING TABLES
    > - ALSO USED "IGNORE" IN SQL QUERY TO AVOID GETTING ERROR
 
-## 6. RUN :
+## 5. RUN :
    > - To Run this project we need to go to terminal and change its path to file_loacted_directory
    > - Then run streamlit code to execute,
 
@@ -66,7 +67,7 @@
    - To run this project use,
 
            streamlit run Youtube.py 
-# Skills Covered ✅ ⬇️
+# 6. Skills Covered ✅ ⬇️
 
     Python (Scripting)
     Data Collection

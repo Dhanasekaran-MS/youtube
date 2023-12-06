@@ -304,7 +304,7 @@ channels=[]
 for channel in collection.find({},{"_id":0,"Channel_Info":1}):
     channels.append(channel["Channel_Info"]["Channel_Id"])
 
-channel_id = st.text_input("Enter a **You:red[Tube]** *Channel Id* :")
+channel_id = st.text_input("Enter a **You:red[Tube]** Channel Id :")
 
 if st.button("*Extract Data to* :violet[**MongoDB**]"):
     if channel_id in channels:

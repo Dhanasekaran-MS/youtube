@@ -7,6 +7,7 @@
    - Installation
 4. Usage
 5. Steps
+6. Run
 ------------------
 
 ## 1. About The Project :
@@ -44,7 +45,27 @@
    - Finally created a Streamlit Web application interface used to Display our project
 
 ## 4. STEPS :
-   1. We created 
+   1. Import all the libraries that are used in this project.
+   2. Created a function which returns api client request and storing in into a variable "youtube".
+   3. Cretaed 5 functions which returns channel,video,playlist and comments data from Youtube API.
+   4. Established mongo client connection.
+   5. Created a function 'data_to_mongo()' with argument "channel_id" which calls the above 5 functions and also stores the collected data into Mongo DB database.
+   6. Created a function 'mongo_to_sql()' which upon calling will migrate the data from Mongo DB to MySQL also creates a database and table if it does not exists.
+   7. Finally created a interactive web application using Streamlit and added buttons to it to make it work.
+   8. Wrote SQL queries to fetch data from MySQL database by using read_sql_query() function from pandas to display it in streamlit
+
+   > - TO AVOID DUPLICATE REPETATION OF CHANNEL WE USED 'PRIMARY KEY' WHILE CREATING TABLES
+   > - ALSO USED "IGNORE" IN SQL QUERY TO AVOID GETTING ERROR
+
+## 6. RUN :
+   > - To Run this project we need to go to terminal and change its path to file_loacted_directory
+   > - Then run streamlit code to execute,
+
+           streamlit run file_name.py
+   - replace file_name with created python file name
+   - To run this project use,
+
+           streamlit run Youtube.py 
 # Skills Covered ✅ ⬇️
 
     Python (Scripting)

@@ -336,7 +336,7 @@ if on:
         ct = pd.read_sql_query("select * from comments;", mydb)
         st.write(ct)
 
-option = st.selectbox(':orange[**Select a *Question* to Display Table**]',
+question = st.selectbox(':orange[**Select a *Question* to Display Table**]',
                       ("1. The name of all the videos and their channel name",
                        "2. The Channel which  has most number of Videos",
                        "3. Top 10 Most Viewed Videos and their  Channel Name",
@@ -351,44 +351,44 @@ option = st.selectbox(':orange[**Select a *Question* to Display Table**]',
                       index=None,
                       placeholder='Select a Question !'
                      )
-if option == "1. The name of all the videos and their channel name":
+if question == "1. The name of all the videos and their channel name":
     query='select title as VIDEO,channel_name as CHANNEL from videos;'
     result=pd.read_sql_query(query,mydb)
     st.write(result)   
-elif option == "2. The Channel which  has most number of Videos":
+elif question == "2. The Channel which  has most number of Videos":
     query="select channel_name as CHANNEL,count(video_id)as VIDEOS_COUNT from videos group by channel_name order by count(video_id) desc limit 1;"
     result=pd.read_sql_query(query,mydb)
     st.write(result)   
-elif option == "3. Top 10 Most Viewed Videos and their  Channel Name":
+elif question == "3. Top 10 Most Viewed Videos and their  Channel Name":
     query='select title as VIDEO, channel_name as CHANNEL,views as VIDEO_VIEWS from videos order by views desc limit 10;'
     result=pd.read_sql_query(query,mydb)
     st.write(result)   
-elif option == "4. How many Comments were made on each Video ?":
+elif question == "4. How many Comments were made on each Video ?":
 #     query="select b.title as VIDEO,count(a.comment_text) COMENTS_COUNT from comments as a left join videos as b on a.video_id=b.video_id group by a.video_id;"
     query="select comment_count as COMMENTS , title as VIDEO from videos;"
     result=pd.read_sql_query(query,mydb)
     st.write(result)
-elif option == "5. Video that has the Highest Number of Likes and it's Channel Name":
+elif question == "5. Video that has the Highest Number of Likes and it's Channel Name":
     query="select title as VIDEO,channel_name as CHANNEL,likes as LIKES from (select *,dense_rank()over(order by likes desc) as r from videos)as ranked_table where r=1;"
     result=pd.read_sql_query(query,mydb)
     st.write(result)
-elif option == "6. The Total Number of Likes for each Video":
+elif question == "6. The Total Number of Likes for each Video":
     query="select likes as NO_OF_LIKES,title as VIDEO from videos;"
     result=pd.read_sql_query(query,mydb)
     st.write(result)
-elif option == "7. The Total Number of Views for each Channel":
+elif question == "7. The Total Number of Views for each Channel":
     query="select sum(views) as TOTAL_VIEWS,channel_name as CHANNEL from videos group by channel_name;"
     result=pd.read_sql_query(query,mydb)
     st.write(result)
-elif option == "8. The Channels that has published videos in the year 2022":
+elif question == "8. The Channels that has published videos in the year 2022":
     query="select distinct channel_name as CHANNEL from videos where year(published_date)=2022;"
     result=pd.read_sql_query(query,mydb)
     st.write(result)
-elif option == "9. The Average Duration of all Videos in each channel":
+elif question == "9. The Average Duration of all Videos in each channel":
     query="select channel_name as CHANNEL,sec_to_time(avg(time_to_sec(duration))) as AVERAGE_DURATION from videos group by channel_name;"
     result=pd.read_sql_query(query,mydb)
     st.write(result)
-elif option == "10. The Video which has Highest No of Comments and it's Channel Name":
+elif question == "10. The Video which has Highest No of Comments and it's Channel Name":
     # query='''select title as VIDEO,count(comment_text)as comments_count,channel_name as CHANNEL from comments as a 
     #         left join videos as b on a.video_id=b.video_id group by a.video_id order by comments_count desc limit 1;'''
     query = "select comment_count as COUNT,title as VIDEO,channel_name as CHANNEL from videos where comment_count=(select max(comment_count) from videos);"

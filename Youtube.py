@@ -327,20 +327,20 @@ for channel in collection.find({},{"_id":0,"Channel_Info":1}):
     channels.append(channel["Channel_Info"]["Channel_Id"])
     
 
-channel_id = st.text_input("Enter a YouTube Channel ID")
+channel_id = st.text_input("Enter a **You:red[Tube]** *Channel Id* :")
 
-if st.button("Extract Data to MongoDB"):
+if st.button("*Extract Data to* :violet[**MongoDB**]"):
     if channel_id in channels:
         st.warning("The Channel Data Already Exists", icon="⚠️")
     else:
         insert=data_to_mongo(channel_id)
         st.success(insert)
 
-if st.button("Migrate Data to MySQL"):
+if st.button("*Transfer Data to* :blue[**MySQL**]"):
     migrate = mongo_to_sql()
     st.success(migrate)
 
-on = st.toggle('View Table')
+on = st.toggle(':green[**View Table**]')
 if on:
     show = st.radio("SELECT A TABLE TO VIEW",["CHANNELS","PLAYLISTS","VIDEOS","COMMENTS"],
                    captions=["To view Channels Table","To view Playlists Table","To view Videos Table","To view Comments Table"],

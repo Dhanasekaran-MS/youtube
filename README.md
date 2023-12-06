@@ -1,5 +1,5 @@
-YouTube Data Harvesting and Warehousing 
-  using MySQL, MongoDB and Streamlit
+**YouTube Data Harvesting and Warehousing 
+  using MySQL, MongoDB and Streamlit**
 ==========================================================================
 
 Table of Contents:

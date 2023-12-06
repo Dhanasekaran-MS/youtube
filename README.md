@@ -1,8 +1,6 @@
-**YouTube Data Harvesting and Warehousing**
-==========================================================================
+# YouTube Data Harvesting and Warehousing
 
-Table of Contents:
-------------------
+## Table of Contents:
 1. About The Project
 2. Getting Started
    - Prerequisites
@@ -10,5 +8,6 @@ Table of Contents:
 4. Usage
 5. 
 ------------------
-About The Project
-=================
+About The Project:
+
+

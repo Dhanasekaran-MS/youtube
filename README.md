@@ -75,5 +75,5 @@
     SQL
     API Integration
     Data Management using MongoDB and MySQL
-    IDE: PyCharm Community Version, VS Code, Jupyter
+    IDE:  Jupyter, PyCharm Community Version, VS Code
 

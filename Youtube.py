@@ -5,8 +5,8 @@ import streamlit as st
 import pandas as pd
 
 with st.sidebar:    
-    st.markdown('''<header style="text-align: center"> <b> <h1 style="color:orange"> YouTube Data Harvesting and Warehousing in Streamlit </h1> </b> </header>''', unsafe_allow_html=True)
-    st.header(body=":red[**SKILLS TAKE AWAY :**]",divider="rainbow")
+    st.title('**You:red[Tube]** :blue[Data Harvesting and Warehousing in Streamlit]')
+    st.header(body=":orange[**SKILLS TAKE AWAY :**]",divider="rainbow")
     st.caption('  - :violet[**Python** Scripting]')
     st.caption('  - :violet[Data **Collection and Management**]')
     st.caption('  - :violet[**Mongo DB**]')

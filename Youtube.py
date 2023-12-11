@@ -297,7 +297,7 @@ try:
     mydb = pymysql.Connection(host="127.0.0.1", user="root", passwd="Dhana@123",database="Youtube")
     cur = mydb.cursor()
 except:
-    st.warning(":no_entry_sign: The Database has not Created)
+    st.warning(":no_entry_sign: The Database has not Created")
     st.error("Extract and Migrate Data to MySQL will automatically creates Database", icon="🚨")
     
 channels=[]

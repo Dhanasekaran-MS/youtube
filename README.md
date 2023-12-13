@@ -40,7 +40,7 @@
    - Ordered the required data from extracted data using python
    - Store ordered data to MongoDB database (DataLake) from python by using **pymongo** library
    - Creating Tables on MySQL database from python by using **pymysql** library
-   - Transfer the Data from MongoDB to MySQL (DATA MIGRATION)
+   - We can select channels to transfer their Data from MongoDB to MySQL (DATA MIGRATION)
    - We can now show tables that were available in MySQL database
    - Ability to search and retrieve data from the SQL database using different search options (10 questions)
    - Finally created a Streamlit Web application interface used to Display our project

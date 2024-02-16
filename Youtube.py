@@ -190,6 +190,7 @@ def formatted_duration(dur):
 def mongo_to_sql(selected_channels):
     mydb = pymysql.Connection(host="127.0.0.1", user="root", passwd="Dhana@123")
     cur = mydb.cursor()
+    cur.execute('drop database Youtube')
     cur.execute("create database if not exists Youtube")
     # Establishing the connection to MySQL database --> 'youtube_data' and creating cursor
     mydb = pymysql.Connection(host="127.0.0.1", user="root", passwd="Dhana@123", database="Youtube")
@@ -331,18 +332,21 @@ channel_id = st.text_input("Enter a **You:red[Tube]** Channel Id :")
 
 if st.button("Extract to :violet[**MongoDB**]"):
     if channel_id in channels:
-        st.warning("The Channel Data Already Exists", icon="тЪая╕П")
+        st.warning("The Channel Data Already Exists", icon="⚠️")
     else:
         insert = data_to_mongo(channel_id)
         st.success(insert)
 
-select = st.multiselect(':red[**Select Channel Names to Migrate**]',
+select = st.multiselect(':blue[**Select Channel Names to Migrate**]',
                         ch_name,
                         placeholder='Select Channels')
+if select:
+    st.write(f"You Selected : {select}")
 
-if st.button("Transfer to :blue[**MySQL**]"):
+if st.button("Migrate to :blue[**MySQL**]"):
     migrate = mongo_to_sql(select)
     st.success(migrate)
+    st.balloons()
 
 on = st.toggle(':green[**View Table**]')
 if on:

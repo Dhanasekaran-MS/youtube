@@ -14,6 +14,14 @@
 ## 1. About The Project :
 
    This project is focused on harvesting data from YouTube channels using the YouTube API, processing the data, and warehousing it. The harvested data is initially stored in a MongoDB database as documents inside collections and is then transfered into SQL records for in-depth data analysis. The project's core functionality relies on the Extract, Transform, Load (ETL) process.
+   Harvested data from YouTube channels using the YouTube API.
+   The Harvested data is processed, formatted and stored into different dictionaries in python.
+   The data initially stored to MongoDB database then migrated into MySQL Workbench for in-depth data analysis.
+   The project's core functionality relies on the Extract, Transform, Load (ETL) process.
+   Created Streamlit interface which takes channel id as input and fetches that particular channels data and added Features to store and migrate the data from MongoDB to MySQL.
+   Added feature to view the channels in MySQL workbench
+   Created Drop-downs to Visualize and analyze the data in tabular view using SQL queries in python.
+
 
 ## 2. Getting Started :
 
